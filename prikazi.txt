@@ -1,0 +1,91 @@
+bsf - set   portd, 0
+
+bcf - clear
+data sheet 162
+
+bcf 0x88h,3
+
+01 00 bb bfff ffff
+01 00 01 1000 1000
+
+       3 = 011
+
+str 19
+
+0x03 - register status str 24
+
+00111000 - bity na str str 24 
+
+
+↑ blbosti
+--------------------------------------------- rozsviceni a zhasinani ledky 1 sec
+   errorlevel - 205 , -207
+    include <p16f877a.inc>
+    include "pokus.inc"
+    tmp1 equ 0x20
+    tmp2 equ 0x21
+    tmp3 equ 0x22
+    org 0x00 
+    ;musim ud2lat inicializaci
+    inicializace
+    start:
+    ;rozsvit led
+    bsf PORTD, 0
+    
+    ;cekej 1 sec
+        movlw 0x29
+	    movwf tmp3
+  skok3: 
+    movlw 0x20
+	 movwf tmp2
+  skok2:    movlw 0xFF
+	    movwf tmp1
+
+    skok:   decfsz tmp1, 1
+	    goto skok 
+	decfsz tmp2, 1
+	goto skok2
+	decfsz tmp3, 1
+	goto skok3
+    nop
+    ;zhasni led
+    bcf PORTD, 0
+    
+    ;cekej 1 sec
+       movlw 0x29
+	    movwf tmp3
+    skok31:
+    movlw 0x20
+	movwf tmp2
+  skok21:    movlw 0xFF
+	    movwf tmp1
+
+    skok1:   decfsz tmp1, 1
+	    goto skok1 
+	decfsz tmp2, 1
+	goto skok21
+	decfsz tmp3, 1
+	goto skok31
+    
+    nop
+    
+    
+       goto start
+       
+    end
+
++++++++++++++++++++++++++++++++++++
+
+inicializace macro 
+    
+     movlw 0x00
+    BANKSEL TRISD
+    movwf TRISD
+    BANKSEL PORTD
+    movwf PORTD
+    
+    
+    ;adcon
+    
+    endm
+----------------------------------------------
